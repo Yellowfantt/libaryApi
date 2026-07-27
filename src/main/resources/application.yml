@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: libaryApi
+  datasource:
+    url: jdbc:postgresql://localhost:5432/library
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      #ddl-auto: update // quem vai controlar a criaçao é o spring
+      ddl-auto: none # aqui sou eu que controlo
+
+
+
+    properties:
+      hibernate.format_sql: true
+
+
+
