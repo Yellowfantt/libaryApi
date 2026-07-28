@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +17,7 @@ import java.util.UUID;
 @Data // dentro da data tem essas anotaçoes @getters e setrs to string equals e requiredargs construtor
 @Table(name = "livro")
 @ToString(exclude = "autor")
+@EntityListeners(AuditingEntityListener.class)
 public class Livro {
     @Id
     @Column(name = "id", nullable = false)
@@ -39,6 +43,17 @@ public class Livro {
     )   //o oautor pode 1 ou mais livros
     @JoinColumn(name = "id_autor") // join colum pra dizer que vai ser uma chave estrangeira
     private Autor autor;
+
+    @CreatedDate
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
+    @LastModifiedDate
+    @Column(name = "data_atualizacao")
+    private LocalDate dataAtualizacao;
+    @Column(name = "id_usuario")
+    private UUID usuarioId;
+
+
 
 
 }
