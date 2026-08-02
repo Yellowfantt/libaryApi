@@ -21,11 +21,5 @@ public record AutorDTO(
         @NotBlank(message = "Campo obrigatorio!")
         String nacionalidade) {
 
-    public Autor mapearAutor() {
-        Autor autor = new Autor();
-        autor.setNome(this.nome);
-        autor.setDataNascimento(this.dataNascimento);
-        autor.setNacionalidade(this.nacionalidade);
-        return autor;
-    }
+
 }

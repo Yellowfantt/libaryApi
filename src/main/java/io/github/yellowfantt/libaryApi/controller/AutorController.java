@@ -2,6 +2,7 @@ package io.github.yellowfantt.libaryApi.controller;
 
 import io.github.yellowfantt.libaryApi.controller.dto.AutorDTO;
 import io.github.yellowfantt.libaryApi.controller.dto.ErroResposta;
+import io.github.yellowfantt.libaryApi.controller.mappers.AutorMapper;
 import io.github.yellowfantt.libaryApi.exceptions.OperacaoNaoPermitidaException;
 import io.github.yellowfantt.libaryApi.exceptions.RegistroDuplicadoException;
 import io.github.yellowfantt.libaryApi.model.Autor;
@@ -27,16 +28,20 @@ import java.util.stream.Collectors;
 public class AutorController {
 
     private final AutorService autorService;
+    private final AutorMapper mapper;
+
 
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autor) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO dto) {
         try{
-        Autor autorEntidade = autor.mapearAutor();
-        autorService.salvarAutor(autorEntidade);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autorEntidade.getId()).toUri();
 
 
-        return ResponseEntity.created(location).build();
+            Autor autorEntidade = mapper.toEntity(dto);
+            autorService.salvarAutor(autorEntidade);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autorEntidade.getId()).toUri();
+
+
+            return ResponseEntity.created(location).build();
         }catch(RegistroDuplicadoException e){
             var erroDto = ErroResposta.conflito(e.getMessage());
             return ResponseEntity.status(erroDto.status()).body(erroDto);
@@ -48,16 +53,21 @@ public class AutorController {
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes (@PathVariable("id")  String id) {
         var id_autor = UUID.fromString(id);
-        Optional<Autor> autor =  autorService.obterOporId(id_autor);
 
+        return autorService.obterOporId(id_autor)
+                .map(autor -> {
+                    AutorDTO dto = mapper.toDto(autor);
+                    return ResponseEntity.ok(dto);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+       /*
         if (autor.isPresent()) {
             Autor autorEntidade = autor.get();
-            AutorDTO autorDTO = new AutorDTO(autorEntidade.getId(), autorEntidade.getNome(), autorEntidade.getDataNascimento(), autorEntidade.getNacionalidade());
+            AutorDTO autorDTO = mapper.toDto(autorEntidade);
             return ResponseEntity.ok(autorDTO);
         }
         return ResponseEntity.notFound().build();
+    }*/
     }
-
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deletar (@PathVariable("id")  String id) {
         try {
@@ -79,7 +89,7 @@ public class AutorController {
     @GetMapping
     public ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome", required = false)  String nome, @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
         List<Autor> resultado = autorService.pesquisaByExample(nome, nacionalidade);
-        List<AutorDTO> lista = resultado.stream().map(autor -> new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade())).collect(Collectors.toList());
+        List<AutorDTO> lista = resultado.stream().map(mapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
 
