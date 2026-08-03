@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/autores")
 @RequiredArgsConstructor
-public class AutorController {
+public class AutorController implements GenericController {
 
     private final AutorService autorService;
     private final AutorMapper mapper;
@@ -38,7 +38,7 @@ public class AutorController {
 
             Autor autorEntidade = mapper.toEntity(dto);
             autorService.salvarAutor(autorEntidade);
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autorEntidade.getId()).toUri();
+            URI location = gerarHeaderController(autorEntidade.getId());
 
 
             return ResponseEntity.created(location).build();
