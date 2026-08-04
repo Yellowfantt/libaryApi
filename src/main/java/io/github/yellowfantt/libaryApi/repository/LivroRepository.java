@@ -6,6 +6,7 @@ import io.github.yellowfantt.libaryApi.model.Livro;
 import jakarta.transaction.Transactional;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +21,7 @@ import java.util.UUID;
 * @see LivroRepositoryTest
 */
 
-public interface LivroRepository extends JpaRepository<Livro, UUID> {
+public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecificationExecutor<Livro> {
     //Query metodo para buscar os livros do autor pelo id; select * from livro where id_autor = "aaaaa"
 
     boolean  existsByAutor (Autor autor);

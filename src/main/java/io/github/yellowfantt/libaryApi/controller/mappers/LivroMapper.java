@@ -1,6 +1,7 @@
 package io.github.yellowfantt.libaryApi.controller.mappers;
 
 import io.github.yellowfantt.libaryApi.controller.dto.CadastroLivroDTO;
+import io.github.yellowfantt.libaryApi.controller.dto.ResultadoPesquisLivroDTO;
 import io.github.yellowfantt.libaryApi.model.Livro;
 import io.github.yellowfantt.libaryApi.repository.AutorRepository;
 import org.mapstruct.Mapper;
@@ -15,5 +16,8 @@ public abstract class LivroMapper {
 
     @Mapping(target = "autor", expression = "java(autorRepository.findById(cadastroLivroDTO.idAutor()).orElse(null))")
     public abstract Livro toEntity(CadastroLivroDTO cadastroLivroDTO);
+
+
+    public abstract ResultadoPesquisLivroDTO toDTO(Livro livro);
 
 }
