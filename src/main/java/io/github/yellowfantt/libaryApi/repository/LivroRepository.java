@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -25,6 +26,8 @@ public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecific
     //Query metodo para buscar os livros do autor pelo id; select * from livro where id_autor = "aaaaa"
 
     boolean  existsByAutor (Autor autor);
+
+    Optional<Livro> findByIsbn (String isbn);
 
     List<Livro> findByAutor(Autor autor); // iso é uma query metodo
 
