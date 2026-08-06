@@ -2,6 +2,7 @@ package io.github.yellowfantt.libaryApi.controller.commom;
 
 import io.github.yellowfantt.libaryApi.controller.dto.ErroCampo;
 import io.github.yellowfantt.libaryApi.controller.dto.ErroResposta;
+import io.github.yellowfantt.libaryApi.exceptions.CampoInvalidoException;
 import io.github.yellowfantt.libaryApi.exceptions.OperacaoNaoPermitidaException;
 import io.github.yellowfantt.libaryApi.exceptions.RegistroDuplicadoException;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,11 @@ public class GlobalExceptionHandler {
     public ErroResposta handleExceptionErrosNaoTratados(RuntimeException e){
         return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(), "", List.of());
 
+    }
+    @ExceptionHandler(CampoInvalidoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErroResposta handleCampoInvalidoException(CampoInvalidoException e){
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Erro de validaçao", List.of(new ErroCampo(e.getCampo(), e.getMessage())));
     }
 
 
