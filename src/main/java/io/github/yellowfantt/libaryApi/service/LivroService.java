@@ -7,10 +7,11 @@ import io.github.yellowfantt.libaryApi.repository.LivroRepository;
 import io.github.yellowfantt.libaryApi.repository.specs.LivroSpecs;
 import io.github.yellowfantt.libaryApi.validator.LivroValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Contract;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,12 +37,14 @@ public class LivroService {
         livroRepository.delete(livro);
     }
 
-    public List<Livro> pesquisa(
+    public Page<Livro> pesquisa(
             String isbn,
             String titulo,
             String nomeAutor,
             GeneroLivro genero,
-            Integer anoPublicacao
+            Integer anoPublicacao,
+            Integer pagina,
+            Integer tamanhoPagina
     ) {
         Specification<Livro> specs = Specification.allOf();
 
@@ -65,7 +68,9 @@ public class LivroService {
             specs = specs.and(LivroSpecs.nomeAutorLike(nomeAutor));
         }
 
-        return livroRepository.findAll(specs);
+        Pageable pageable = PageRequest.of(pagina, tamanhoPagina);
+
+        return livroRepository.findAll(specs, pageable);
     }
 
     public void atualizar(Livro livro) {

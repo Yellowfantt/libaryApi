@@ -11,6 +11,7 @@ import io.github.yellowfantt.libaryApi.model.Livro;
 import io.github.yellowfantt.libaryApi.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResultadoPesquisLivroDTO>> pesquisa(
+    public ResponseEntity<Page<ResultadoPesquisLivroDTO>> pesquisa(
             @RequestParam(value = "isbn", required = false)
             String isbn,
             @RequestParam(value = "titulo", required = false)
@@ -64,12 +65,13 @@ public class LivroController implements GenericController {
             @RequestParam(value = "genero", required = false)
             GeneroLivro genero,
             @RequestParam(value = "anoPublicacao", required = false)
-            Integer anoPublicacao) {
+            Integer anoPublicacao, @RequestParam(value = "pagina", defaultValue = "0") Integer pagina, @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina) {
 
-        var resultado =  livroService.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao);
-        var lista = resultado.stream().map(livroMapper::toDTO).collect(Collectors.toList());
+        var resultadoPagina =  livroService.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao, pagina, tamanhoPagina);
 
-        return ResponseEntity.ok(lista);
+        Page<ResultadoPesquisLivroDTO> resultado = resultadoPagina.map(livroMapper::toDTO);
+
+        return ResponseEntity.ok(resultado);
 
     }
 

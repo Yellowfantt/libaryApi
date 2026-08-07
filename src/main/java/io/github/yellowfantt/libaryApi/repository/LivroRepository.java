@@ -5,6 +5,8 @@ import io.github.yellowfantt.libaryApi.model.GeneroLivro;
 import io.github.yellowfantt.libaryApi.model.Livro;
 import jakarta.transaction.Transactional;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,6 +34,12 @@ public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecific
     List<Livro> findByAutor(Autor autor); // iso é uma query metodo
 
     List<Livro> findByTitulo(String titulo);
+    // pesquisa paginada usando spring jpa
+
+
+
+    Page<Livro> findByAutor(Autor autor, Pageable pageable);
+
 
     List<Livro> findByPrecoAndTitulo(BigDecimal bigDecimal, String titulo);
     // select * from livro where data_publicacao between ? and ? // lisstar todas os livros de uma data até otura
