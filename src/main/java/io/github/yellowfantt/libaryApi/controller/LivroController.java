@@ -99,6 +99,6 @@ public class LivroController implements GenericController {
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    //FINALIZADA A API agr é iniciar a documentação com o swagger
+    //FINALIZADA A API agr é iniciar a documentação com o swagger e depois a parte de segurança
 
 }
